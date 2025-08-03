@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTools Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glass-container">
+        <header>
+            <h1>DevTools Dashboard</h1>
+            <p>Essential tools for developers</p>
+        </header>
+
+        <div class="tool-grid">
+            <!-- Tool 1: JSON Formatter -->
+            <div class="glass-card">
+                <h2>JSON Formatter</h2>
+                <textarea id="jsonInput" placeholder='{"name":"John"}'></textarea>
+                <button onclick="formatJSON()">Format</button>
+                <pre id="jsonOutput"></pre>
+            </div>
+
+            <!-- Tool 2: Base64 Converter -->
+            <div class="glass-card">
+                <h2>Base64 Converter</h2>
+                <input type="text" id="base64Input" placeholder="Enter text">
+                <div class="button-group">
+                    <button onclick="encodeBase64()">Encode</button>
+                    <button onclick="decodeBase64()">Decode</button>
+                </div>
+                <p id="base64Output"></p>
+            </div>
+
+            <!-- Tool 3: Color Picker -->
+            <div class="glass-card">
+                <h2>Color Picker</h2>
+                <input type="color" id="colorPicker" value="#6200ee">
+                <div class="color-codes">
+                    <span id="hexCode">#6200ee</span>
+                    <span id="rgbCode">rgb(98, 0, 238)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
