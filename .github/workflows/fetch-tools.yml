@@ -1,0 +1,73 @@
+name: Fetch Tools from FutureTools.io
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Fetch and update tools
+        run: |
+          python << 'EOF'
+          import requests, json
+
+          url = "https://firestore.googleapis.com/v1/projects/futuretools-io/databases/(default)/documents/tools"
+          data = requests.get(url).json()
+
+          try:
+              with open('tools.json', 'r') as f:
+                  existing = json.load(f)
+          except FileNotFoundError:
+              existing = []
+
+          names = {t['name'].lower() for t in existing if 'name' in t}
+
+          new_tools = []
+          for doc in data.get('documents', []):
+              f = doc.get('fields', {})
+              name = f.get('name', {}).get('stringValue', '').strip()
+              if not name or name.lower() in names:
+                  continue
+
+              tool = {
+                  "name": name,
+                  "url": f.get('url', {}).get('stringValue', ''),
+                  "githubUrl": "",
+                  "description": f.get('description', {}).get('stringValue', '')[:200] + "...",
+                  "tags": [t['stringValue'] for t in f.get('tags', {}).get('arrayValue', {}).get('values', [])] + ['AI'],
+                  "hasApi": any(w in f.get('description', {}).get('stringValue', '').lower() for w in ['api', 'integration']),
+                  "useCases": [f.get('category', {}).get('stringValue', 'Other')],
+                  "stars": 0
+              }
+              new_tools.append(tool)
+              names.add(name.lower())
+
+          updated = existing + new_tools
+          with open('tools.json', 'w') as f:
+              json.dump(updated, f, indent=2)
+
+          print(f"✅ Added {len(new_tools)} tools")
+          EOF
+
+      - name: Commit if updated
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tools.json
+          git diff-index --quiet HEAD || git commit -m "🤖 Auto-update: Add tools from FutureTools.io"
+          git push
+          
