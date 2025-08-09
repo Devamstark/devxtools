@@ -1,10 +1,8 @@
-// === scripts.js - Full updated version with search & filter chips ===
-// Handles search, filter chips, and dynamic rendering
-
+// === scripts.js - Full updated version with top navigation tabs ===
 document.addEventListener("DOMContentLoaded", async () => {
   const toolList = document.getElementById("tool-list");
   const searchInput = document.getElementById("search");
-  const chips = document.querySelectorAll(".chip");
+  const navLinks = document.querySelectorAll(".nav-link");
 
   let activeFilter = "all";
   let tools = [];
@@ -16,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     tools = await res.json();
   } catch (e) {
     toolList.innerHTML = `
-      <p style="text-align: center; color: #d32f2f; padding: 20px;">
+      <p style="grid-column: 1 / -1; text-align: center; color: #d32f2f; padding: 20px;">
         🛠️ Failed to load tools. Check your <code>tools.json</code> file.
       </p>`;
     console.error("Error loading tools:", e);
@@ -32,20 +30,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return false;
   }
 
-  // Render tools based on search and filter
+  // Render tools
   function renderTools() {
     const query = searchInput.value.toLowerCase().trim();
 
     const filtered = tools.filter(tool => {
-      const matchesSearch = query === "" ||
+      const matchesSearch = !query || 
         tool.name.toLowerCase().includes(query) ||
         tool.description.toLowerCase().includes(query) ||
-        (tool.tags && tool.tags.some(tag => tag.toLowerCase().includes(query))) ||
-        (tool.useCases && tool.useCases.some(uc => uc.toLowerCase().includes(query)));
-      
-      const matchesChip = matchesFilter(tool, activeFilter);
-      
-      return matchesSearch && matchesChip;
+        (tool.tags && tool.tags.some(t => t.toLowerCase().includes(query)));
+      const matchesTab = matchesFilter(tool, activeFilter);
+      return matchesSearch && matchesTab;
     });
 
     if (filtered.length === 0) {
@@ -59,9 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     toolList.innerHTML = filtered.map(tool => `
       <div class="tool-card">
         <h3>
-          <a href="${tool.url}" target="_blank" rel="noopener">${tool.name}</a>
+          <a href="${tool.url}" target="_blank">${tool.name}</a>
           ${tool.githubUrl 
-            ? `<a href="${tool.githubUrl}" class="github-link" target="_blank" rel="noopener">⭐${tool.stars.toLocaleString()}</a>` 
+            ? `<a href="${tool.githubUrl}" class="github-link" target="_blank">⭐${tool.stars.toLocaleString()}</a>` 
             : ''}
         </h3>
         <p>${tool.description}</p>
@@ -75,12 +70,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Search input
   searchInput.addEventListener("input", renderTools);
 
-  // Filter chips
-  chips.forEach(chip => {
-    chip.addEventListener("click", () => {
-      activeFilter = chip.getAttribute("data-filter");
-      chips.forEach(c => c.classList.remove("active"));
-      chip.classList.add("active");
+  // Top nav tab clicks
+  navLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      activeFilter = link.getAttribute("data-filter");
+
+      // Update active class
+      navLinks.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+
       renderTools();
     });
   });
@@ -94,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   toggle.className = "theme-toggle";
   toggle.innerHTML = "🌙";
   toggle.title = "Toggle dark mode";
-  toggle.setAttribute("aria-label", "Toggle dark mode");
   toggle.onclick = () => {
     body.classList.toggle("dark");
     toggle.innerHTML = body.classList.contains("dark") ? "☀️" : "🌙";

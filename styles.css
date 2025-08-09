@@ -1,5 +1,8 @@
-/* === styles.css - Modern, bestofai.com-inspired design === */
-* { box-sizing: border-box; }
+/* === styles.css - Modern, clean design inspired by FutureTools.io === */
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -22,6 +25,7 @@ body.dark {
   padding: 20px;
 }
 
+/* === Hero Section === */
 .hero {
   text-align: center;
   padding: 50px 20px 30px;
@@ -43,6 +47,7 @@ body.dark {
   margin-right: auto;
 }
 
+/* === Search Bar === */
 .search-container {
   max-width: 600px;
   margin: 0 auto 30px;
@@ -55,9 +60,12 @@ body.dark {
   border: 2px solid #ddd;
   border-radius: 12px;
   outline: none;
+  transition: border 0.2s;
 }
 
-#search:focus { border-color: #005cbf; }
+#search:focus {
+  border-color: #005cbf;
+}
 
 body.dark #search {
   background: #1e1e1e;
@@ -65,42 +73,62 @@ body.dark #search {
   border-color: #444;
 }
 
-.filter-chips {
+/* === Top Navigation Tabs === */
+.top-nav {
   display: flex;
   justify-content: center;
   gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  background: #fcfcfc;
+  scrollbar-width: none;
 }
 
-.chip {
+.top-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-link {
+  color: #555;
+  text-decoration: none;
   padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  background: #f8f9fa;
-  font-size: 0.9em;
-  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.chip:hover { background: #e9ecef; }
-
-.chip.active {
-  background: #005cbf;
-  color: white;
-  border-color: #005cbf;
+.nav-link:hover {
+  color: #005cbf;
+  background: #f0f7ff;
 }
 
-body.dark .chip {
-  background: #2a2a2a;
-  border-color: #555;
-  color: #ddd;
+.nav-link.active {
+  color: #005cbf;
+  background: #e6f0ff;
+  font-weight: 600;
 }
 
-body.dark .chip.active {
-  background: #0066ff;
-  border-color: #0066ff;
+body.dark .top-nav {
+  border-bottom-color: #444;
+  background: #1a1a1a;
 }
 
+body.dark .nav-link {
+  color: #bbb;
+}
+
+body.dark .nav-link:hover,
+body.dark .nav-link.active {
+  color: #8fc1e3;
+  background: #2a4566;
+}
+
+/* === Tool Cards Grid === */
 #tool-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -121,6 +149,7 @@ body.dark .chip.active {
 .tool-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  border-color: #ccc;
 }
 
 body.dark .tool-card {
@@ -128,6 +157,7 @@ body.dark .tool-card {
   border-color: #333;
 }
 
+/* Tool Card Header */
 .tool-card h3 {
   margin: 0 0 8px 0;
   font-size: 1.2em;
@@ -142,15 +172,19 @@ body.dark .tool-card {
   font-weight: 600;
 }
 
-.tool-card h3 a:hover { text-decoration: underline; }
+.tool-card h3 a:hover {
+  text-decoration: underline;
+}
 
 .github-link {
   font-size: 0.85em;
   color: #005cbf;
   text-decoration: none;
   margin-left: 8px;
+  font-weight: 500;
 }
 
+/* Description */
 .tool-card p {
   margin: 0 0 12px 0;
   font-size: 0.95em;
@@ -158,8 +192,11 @@ body.dark .tool-card {
   flex-grow: 1;
 }
 
-body.dark .tool-card p { color: #bbb; }
+body.dark .tool-card p {
+  color: #bbb;
+}
 
+/* Tags */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -181,6 +218,7 @@ body.dark .tag {
   color: #8fc1e3;
 }
 
+/* Footer */
 footer {
   text-align: center;
   margin-top: 60px;
@@ -194,8 +232,11 @@ footer a {
   text-decoration: none;
 }
 
-footer a:hover { text-decoration: underline; }
+footer a:hover {
+  text-decoration: underline;
+}
 
+/* Dark Mode Toggle */
 .theme-toggle {
   position: fixed;
   top: 20px;
@@ -211,6 +252,7 @@ footer a:hover { text-decoration: underline; }
   cursor: pointer;
   font-size: 1.2em;
   z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 body.dark .theme-toggle {
@@ -219,7 +261,12 @@ body.dark .theme-toggle {
   border-color: #555;
 }
 
+/* Responsive */
 @media (max-width: 600px) {
-  .logo { font-size: 2em; }
-  #tool-list { grid-template-columns: 1fr; }
+  .logo {
+    font-size: 2em;
+  }
+  #tool-list {
+    grid-template-columns: 1fr;
+  }
 }
