@@ -1,0 +1,77 @@
+name: Update AI Tools from GitHub
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday at 00:00 UTC
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch trending AI repositories
+        run: |
+          # Fetch top 20 AI repos by stars
+          curl -s "https://api.github.com/search/repositories?q=topic:ai+sort:stars&per_page=20" > github-tools.json
+
+          # Process with jq
+          cat github-tools.json | jq -r '
+          .items[] |
+          {
+            name: .name,
+            url: .html_url,
+            githubUrl: .html_url,
+            description: (.description // "No description")[:200],
+            stars: .stargazers_count,
+            tags: ["AI", "Open Source", "GitHub Trending"],
+            hasApi: false,
+            useCases: ["LLM Apps"]
+          }' > new-tools.json
+
+      - name: Merge with existing tools.json
+        run: |
+          python << 'EOF'
+          import json
+
+          # Load new tools
+          try:
+              with open('new-tools.json', 'r') as f:
+                  new_tools = json.load(f)
+          except:
+              new_tools = []
+
+          # Load existing tools
+          try:
+              with open('tools.json', 'r') as f:
+                  existing_tools = json.load(f)
+          except (FileNotFoundError, json.JSONDecodeError):
+              existing_tools = []
+
+          # Avoid duplicates
+          existing_names = {tool['name'].strip().lower() for tool in existing_tools if 'name' in tool}
+          added = 0
+
+          for tool in new_tools:
+              name = tool['name'].strip().lower()
+              if name and name not in existing_names:
+                  existing_tools.append(tool)
+                  existing_names.add(name)
+                  added += 1
+
+          # Save back
+          with open('tools.json', 'w', encoding='utf-8') as f:
+              json.dump(existing_tools, f, indent=2, ensure_ascii=False)
+
+          print(f"✅ Added {added} new tools from GitHub")
+          EOF
+
+      - name: Commit if updated
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tools.json
+          git diff-index --quiet HEAD || git commit -m "🤖 Auto-update: Add trending AI tools from GitHub"
+          git push
