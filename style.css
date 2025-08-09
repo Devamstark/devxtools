@@ -1,9 +1,5 @@
 /* === styles.css - Modern, bestofai.com-inspired design === */
-/* Clean, responsive, with Inter font, cards, and filter chips */
-
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -26,7 +22,6 @@ body.dark {
   padding: 20px;
 }
 
-/* === Hero Section === */
 .hero {
   text-align: center;
   padding: 50px 20px 30px;
@@ -48,7 +43,6 @@ body.dark {
   margin-right: auto;
 }
 
-/* === Search Bar === */
 .search-container {
   max-width: 600px;
   margin: 0 auto 30px;
@@ -61,12 +55,9 @@ body.dark {
   border: 2px solid #ddd;
   border-radius: 12px;
   outline: none;
-  transition: border 0.2s;
 }
 
-#search:focus {
-  border-color: #005cbf;
-}
+#search:focus { border-color: #005cbf; }
 
 body.dark #search {
   background: #1e1e1e;
@@ -74,7 +65,6 @@ body.dark #search {
   border-color: #444;
 }
 
-/* === Filter Chips === */
 .filter-chips {
   display: flex;
   justify-content: center;
@@ -90,12 +80,9 @@ body.dark #search {
   background: #f8f9fa;
   font-size: 0.9em;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.chip:hover {
-  background: #e9ecef;
-}
+.chip:hover { background: #e9ecef; }
 
 .chip.active {
   background: #005cbf;
@@ -114,7 +101,6 @@ body.dark .chip.active {
   border-color: #0066ff;
 }
 
-/* === Tool Cards Grid === */
 #tool-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -134,8 +120,7 @@ body.dark .chip.active {
 
 .tool-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-  border-color: #ccc;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
 body.dark .tool-card {
@@ -143,7 +128,6 @@ body.dark .tool-card {
   border-color: #333;
 }
 
-/* Tool Card Header */
 .tool-card h3 {
   margin: 0 0 8px 0;
   font-size: 1.2em;
@@ -158,19 +142,15 @@ body.dark .tool-card {
   font-weight: 600;
 }
 
-.tool-card h3 a:hover {
-  text-decoration: underline;
-}
+.tool-card h3 a:hover { text-decoration: underline; }
 
 .github-link {
   font-size: 0.85em;
   color: #005cbf;
   text-decoration: none;
   margin-left: 8px;
-  font-weight: 500;
 }
 
-/* Description */
 .tool-card p {
   margin: 0 0 12px 0;
   font-size: 0.95em;
@@ -178,11 +158,8 @@ body.dark .tool-card {
   flex-grow: 1;
 }
 
-body.dark .tool-card p {
-  color: #bbb;
-}
+body.dark .tool-card p { color: #bbb; }
 
-/* Tags */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -204,7 +181,6 @@ body.dark .tag {
   color: #8fc1e3;
 }
 
-/* Footer */
 footer {
   text-align: center;
   margin-top: 60px;
@@ -218,11 +194,8 @@ footer a {
   text-decoration: none;
 }
 
-footer a:hover {
-  text-decoration: underline;
-}
+footer a:hover { text-decoration: underline; }
 
-/* Dark Mode Toggle Button */
 .theme-toggle {
   position: fixed;
   top: 20px;
@@ -238,7 +211,6 @@ footer a:hover {
   cursor: pointer;
   font-size: 1.2em;
   z-index: 100;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 body.dark .theme-toggle {
@@ -247,18 +219,7 @@ body.dark .theme-toggle {
   border-color: #555;
 }
 
-/* Responsive Design */
 @media (max-width: 600px) {
-  .container {
-    padding: 15px;
-  }
-  .logo {
-    font-size: 2em;
-  }
-  .tagline {
-    font-size: 1em;
-  }
-  #tool-list {
-    grid-template-columns: 1fr;
-  }
+  .logo { font-size: 2em; }
+  #tool-list { grid-template-columns: 1fr; }
 }
