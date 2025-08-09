@@ -11,13 +11,17 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_PAT }}
+          ref: ${{ github.ref }}
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Fetch trending AI repositories
         run: |
-          # Fetch top 20 AI repos by stars
           curl -s "https://api.github.com/search/repositories?q=topic:ai+sort:stars&per_page=20" > github-tools.json
 
-          # Process with jq
           cat github-tools.json | jq -r '
           .items[] |
           {
@@ -36,21 +40,19 @@ jobs:
           python << 'EOF'
           import json
 
-          # Load new tools
           try:
               with open('new-tools.json', 'r') as f:
                   new_tools = json.load(f)
-          except:
+          except Exception as e:
+              print(f"Error loading new tools: {e}")
               new_tools = []
 
-          # Load existing tools
           try:
               with open('tools.json', 'r') as f:
                   existing_tools = json.load(f)
           except (FileNotFoundError, json.JSONDecodeError):
               existing_tools = []
 
-          # Avoid duplicates
           existing_names = {tool['name'].strip().lower() for tool in existing_tools if 'name' in tool}
           added = 0
 
@@ -61,17 +63,16 @@ jobs:
                   existing_names.add(name)
                   added += 1
 
-          # Save back
           with open('tools.json', 'w', encoding='utf-8') as f:
               json.dump(existing_tools, f, indent=2, ensure_ascii=False)
 
           print(f"✅ Added {added} new tools from GitHub")
           EOF
 
-      - name: Commit if updated
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tools.json
           git diff-index --quiet HEAD || git commit -m "🤖 Auto-update: Add trending AI tools from GitHub"
-          git push
+          git push "https://x-access-token:${{ secrets.REPO_PAT }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref }}
