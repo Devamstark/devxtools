@@ -2,7 +2,7 @@
 
 The **developer-first**, **GitHub-powered** directory of the best AI tools — built for engineers, founders, and makers who want to **discover, filter, and integrate** AI tools with real APIs, CLIs, and open-source code.
 
-👉 **Live Demo**: [https://devamstark.github.io/devxtools](https://yourusername.github.io/devxtools)
+👉 **Live Demo**: [https://devamstark.github.io/devxtools](https://devamstark.github.io/devxtools)
 
 ## 🔍 What Is This?
 
