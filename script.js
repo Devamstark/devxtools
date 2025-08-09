@@ -98,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   toggle.onclick = () => {
     body.classList.toggle("dark");
     toggle.innerHTML = body.classList.contains("dark") ? "☀️" : "🌙";
-    // Save preference
     localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
   };
   document.body.appendChild(toggle);
