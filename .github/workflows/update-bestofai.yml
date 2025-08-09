@@ -1,0 +1,89 @@
+name: Auto-Update Tools from BestOfAI.com
+
+on:
+  # Run automatically every Monday at 00:00 UTC
+  schedule:
+    - cron: '0 0 * * 1'
+  
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install requests
+        run: |
+          pip install requests
+
+      - name: Fetch and process BestOfAI tools
+        run: |
+          python << 'EOF'
+          import requests
+          import json
+
+          print("📡 Fetching tools from BestOfAI.com...")
+          url = "https://bestofai.com/ai-tools.json"
+          try:
+              response = requests.get(url, timeout=10)
+              response.raise_for_status()
+              tools = response.json()
+          except Exception as e:
+              print(f"❌ Failed to fetch BestOfAI: {e}")
+              exit(1)
+
+          # Load existing tools
+          try:
+              with open('tools.json', 'r') as f:
+                  existing = json.load(f)
+          except (FileNotFoundError, json.JSONDecodeError):
+              existing = []
+
+          # Avoid duplicates
+          existing_names = {t['name'].strip().lower() for t in existing if 'name' in t}
+
+          new_tools = []
+          print(f"📦 Found {len(tools)} tools. Processing...")
+
+          for tool in tools:
+              name = tool.get('name', '').strip()
+              if not name or name.lower() in existing_names:
+                  continue
+
+              devx_tool = {
+                  "name": name,
+                  "url": tool.get('homepage_url', tool.get('github_url', '')),
+                  "githubUrl": tool.get('github_url', ''),
+                  "description": tool.get('description', 'No description')[:200],
+                  "tags": [tool.get('category', 'AI')] + tool.get('tags', []),
+                  "hasApi": any(word in str(tool).lower() for word in ['api', 'integration']),
+                  "useCases": [tool.get('category', 'Other')],
+                  "stars": tool.get('stars', 0)
+              }
+
+              new_tools.append(devx_tool)
+              existing_names.add(name.lower())
+
+          # Save merged list
+          updated = existing + new_tools
+          with open('tools.json', 'w', encoding='utf-8') as f:
+              json.dump(updated, f, indent=2, ensure_ascii=False)
+
+          print(f"✅ Successfully added {len(new_tools)} tools from BestOfAI.com!")
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tools.json
+          git diff-index --quiet HEAD || git commit -m "🤖 Auto-update: Add tools from BestOfAI.com"
+          git push
