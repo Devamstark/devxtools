@@ -3,38 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🚀 DevXTools – Best AI Tools for Developers</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>⚡ DevXTools – Best AI Tools for Developers</title>
   <meta name="description" content="Developer-first directory of AI tools with APIs, CLI, and open-source integrations.">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Import Inter font (used on bestofai.com) -->
+  <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🚀 DevXTools</h1>
-      <p>The open, GitHub-powered directory of AI tools for builders, engineers, and founders.</p>
+    <header class="hero">
+      <h1>
+        <span class="logo">⚡ DevXTools</span>
+      </h1>
+      <p class="tagline">The developer-first directory of AI tools with APIs, CLI, and real integrations.</p>
+
+      <!-- Modern Search Bar -->
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Search AI tools by name, use case, or tech..." />
+      </div>
+
+      <!-- Filter Chips -->
+      <div class="filter-chips">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="hasApi">API</button>
+        <button class="chip" data-filter="LLM Apps">LLM Apps</button>
+        <button class="chip" data-filter="No-Code Automation">No-Code</button>
+        <button class="chip" data-filter="Open Source">Open Source</button>
+        <button class="chip" data-filter="SaaS">SaaS</button>
+      </div>
     </header>
 
-    <div class="filters">
-      <input type="text" id="search" placeholder="Search tools..." />
-      <select id="useCaseFilter">
-        <option value="">All Use Cases</option>
-        <option value="LLM Apps">LLM Apps</option>
-        <option value="No-Code Automation">No-Code Automation</option>
-        <option value="SaaS">Great for SaaS</option>
-        <option value="Open Source">Open Source</option>
-        <option value="DevOps AI">DevOps AI</option>
-      </select>
-      <label><input type="checkbox" id="apiOnly" /> API Only</label>
-    </div>
-
+    <!-- Tool Cards -->
     <main id="tool-list">
-      <!-- Tools loaded dynamically -->
+      <!-- Tools will be injected here -->
     </main>
 
     <footer>
       <p>Built for developers. <a href="https://github.com/yourusername/devxtools">Contribute on GitHub</a>.</p>
     </footer>
   </div>
+
   <script src="scripts.js"></script>
 </body>
 </html>

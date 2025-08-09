@@ -1,0 +1,84 @@
+name: Update AI Tools Weekly
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday at 00:00 UTC
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  update-tools:
+    name: Fetch trending AI repos & update tools.json
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install jq (for JSON processing)
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Fetch trending AI repositories
+        id: fetch
+        run: |
+          # Fetch top 20 AI repos by stars
+          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/search/repositories?q=topic:ai+sort:stars&per_page=20" \
+            -o trending.json
+
+          # Extract minimal data: name, url, githubUrl, stars, description
+          cat trending.json | jq -r '
+          .items[] |
+          {
+            name: .name,
+            url: .homepage || .html_url,
+            githubUrl: .html_url,
+            description: .description // "No description",
+            stars: .stargazers_count,
+            lastUpdated: now | strftime("%Y-%m-%d")
+          }' > new-tools.tmp
+
+      - name: Merge new tools into tools.json
+        run: |
+          # Simple script to avoid duplicates and merge
+          python3 << 'EOF'
+          import json
+
+          # Load existing tools
+          try:
+              with open('tools.json', 'r') as f:
+                  existing_tools = json.load(f)
+          except (FileNotFoundError, json.JSONDecodeError):
+              existing_tools = []
+
+          # Load new tools
+          with open('new-tools.tmp', 'r') as f:
+              new_tools = json.load(f)
+
+          # Create a set of existing GitHub URLs for fast lookup
+          existing_urls = {tool['githubUrl'] for tool in existing_tools if tool.get('githubUrl')}
+
+          # Add only new tools
+          added = 0
+          for tool in new_tools:
+              if tool['githubUrl'] and tool['githubUrl'] not in existing_urls:
+                  tool['tags'] = ['GitHub Trending', 'AI', 'Open Source']
+                  tool['hasApi'] = False  # Manual update later
+                  tool['useCases'] = ['LLM Apps']  # Default
+                  existing_tools.append(tool)
+                  added += 1
+
+          # Save back
+          with open('tools.json', 'w', encoding='utf-8') as f:
+              json.dump(existing_tools, f, indent=2)
+
+          print(f"✅ Added {added} new tools to tools.json")
+          EOF
+
+      - name: Commit and push if there are changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add tools.json
+          git diff-index --quiet HEAD || git commit -m "🤖 Auto-update: Add trending AI tools from GitHub"
+          git push origin main
