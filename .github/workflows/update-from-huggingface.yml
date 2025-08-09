@@ -2,8 +2,8 @@ name: Update AI Tools from Hugging Face
 
 on:
   schedule:
-    - cron: '0 0 * * 2'  # Every Tuesday at 00:00 UTC
-  workflow_dispatch:     # Allows manual trigger
+    - cron: '0 0 * * 2'
+  workflow_dispatch:
 
 jobs:
   update:
@@ -14,20 +14,18 @@ jobs:
 
       - name: Fetch trending Hugging Face Spaces
         run: |
-          # Fetch trending Spaces (LLM apps, AI agents, etc.)
           curl -s "https://huggingface.co/api/spaces?sort=trending" > hf-spaces.json
 
-          # Process with jq
           cat hf-spaces.json | jq -r '
           .[] |
           {
-            name: .id | split("/")[1],
-            url: "https://huggingface.co/spaces/" + .id,
-            githubUrl: .repoUrl // "",
-            description: (.cardData.description // "No description")[:200],
+            name: (.id | split("/")[1]),
+            url: ("https://huggingface.co/spaces/" + .id),
+            githubUrl: (.repoUrl // ""),
+            description: ((.cardData.description // "No description") | tostring | sub("\\n.*$"; "") | .[:200]),
             stars: .likes,
             tags: ["AI", "LLM Apps", "Open Source", "Hugging Face"] + (.cardData.tags[:3] // []),
-            hasApi: (.cardData.sdk == "gradio" or .cardData.sdk == "streamlit") | tostring,
+            hasApi: (.cardData.sdk == "gradio" or .cardData.sdk == "streamlit"),
             useCases: ["LLM Apps", "Agents", "Open Source"]
           }' > new-tools.json
 
@@ -36,22 +34,19 @@ jobs:
           python << 'EOF'
           import json
 
-          # Load new tools
           try:
-              with open('new-tools.json', 'r') as f:
+              with open('new-tools.json') as f:
                   new_tools = json.load(f)
           except Exception as e:
               print(f"Error loading new tools: {e}")
               new_tools = []
 
-          # Load existing tools
           try:
               with open('tools.json', 'r') as f:
                   existing_tools = json.load(f)
           except (FileNotFoundError, json.JSONDecodeError):
               existing_tools = []
 
-          # Avoid duplicates
           existing_names = {tool['name'].strip().lower() for tool in existing_tools if 'name' in tool}
           added = 0
 
@@ -62,7 +57,6 @@ jobs:
                   existing_names.add(name)
                   added += 1
 
-          # Save back
           with open('tools.json', 'w', encoding='utf-8') as f:
               json.dump(existing_tools, f, indent=2, ensure_ascii=False)
 
