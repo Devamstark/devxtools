@@ -1,51 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevTools Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🚀 DevXTools – Best AI Tools for Developers</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Developer-first directory of AI tools with APIs, CLI, and open-source integrations.">
 </head>
 <body>
-    <div class="glass-container">
-        <header>
-            <h1>DevTools Dashboard</h1>
-            <p>Essential tools for developers</p>
-        </header>
+  <div class="container">
+    <header>
+      <h1>🚀 DevXTools</h1>
+      <p>The open, GitHub-powered directory of AI tools for builders, engineers, and founders.</p>
+    </header>
 
-        <div class="tool-grid">
-            <!-- Tool 1: JSON Formatter -->
-            <div class="glass-card">
-                <h2>JSON Formatter</h2>
-                <textarea id="jsonInput" placeholder='{"name":"John"}'></textarea>
-                <button onclick="formatJSON()">Format</button>
-                <pre id="jsonOutput"></pre>
-            </div>
-
-            <!-- Tool 2: Base64 Converter -->
-            <div class="glass-card">
-                <h2>Base64 Converter</h2>
-                <input type="text" id="base64Input" placeholder="Enter text">
-                <div class="button-group">
-                    <button onclick="encodeBase64()">Encode</button>
-                    <button onclick="decodeBase64()">Decode</button>
-                </div>
-                <p id="base64Output"></p>
-            </div>
-
-            <!-- Tool 3: Color Picker -->
-            <div class="glass-card">
-                <h2>Color Picker</h2>
-                <input type="color" id="colorPicker" value="#6200ee">
-                <div class="color-codes">
-                    <span id="hexCode">#6200ee</span>
-                    <span id="rgbCode">rgb(98, 0, 238)</span>
-                </div>
-            </div>
-        </div>
+    <div class="filters">
+      <input type="text" id="search" placeholder="Search tools..." />
+      <select id="useCaseFilter">
+        <option value="">All Use Cases</option>
+        <option value="LLM Apps">LLM Apps</option>
+        <option value="No-Code Automation">No-Code Automation</option>
+        <option value="SaaS">Great for SaaS</option>
+        <option value="Open Source">Open Source</option>
+        <option value="DevOps AI">DevOps AI</option>
+      </select>
+      <label><input type="checkbox" id="apiOnly" /> API Only</label>
     </div>
 
-    <script src="script.js"></script>
+    <main id="tool-list">
+      <!-- Tools loaded dynamically -->
+    </main>
+
+    <footer>
+      <p>Built for developers. <a href="https://github.com/yourusername/devxtools">Contribute on GitHub</a>.</p>
+    </footer>
+  </div>
+  <script src="scripts.js"></script>
 </body>
 </html>

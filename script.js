@@ -1,34 +1,51 @@
-// JSON Formatter
-function formatJSON() {
-    try {
-        const input = document.getElementById('jsonInput').value;
-        const parsed = JSON.parse(input);
-        document.getElementById('jsonOutput').textContent = JSON.stringify(parsed, null, 2);
-    } catch (e) {
-        alert("Invalid JSON!");
-    }
-}
+document.addEventListener("DOMContentLoaded", async () => {
+  const toolList = document.getElementById("tool-list");
+  const searchInput = document.getElementById("search");
+  const useCaseFilter = document.getElementById("useCaseFilter");
+  const apiOnly = document.getElementById("apiOnly");
 
-// Base64 Tools
-function encodeBase64() {
-    const text = document.getElementById('base64Input').value;
-    document.getElementById('base64Output').textContent = btoa(text);
-}
+  let tools = [];
 
-function decodeBase64() {
-    const text = document.getElementById('base64Input').value;
-    document.getElementById('base64Output').textContent = atob(text);
-}
+  try {
+    const res = await fetch("tools.json");
+    tools = await res.json();
+  } catch (e) {
+    toolList.innerHTML = "<p style='color: red;'>Failed to load tools. Check your GitHub repo.</p>";
+    console.error("Failed to load tools.json:", e);
+    return;
+  }
 
-// Color Picker
-document.getElementById('colorPicker').addEventListener('input', (e) => {
-    const hex = e.target.value;
-    document.getElementById('hexCode').textContent = hex;
-    
-    // Convert hex to RGB
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    
-    document.getElementById('rgbCode').textContent = `rgb(${r}, ${g}, ${b})`;
+  function renderTools() {
+    const query = searchInput.value.toLowerCase();
+    const useCase = useCaseFilter.value;
+    const api = apiOnly.checked;
+
+    const filtered = tools.filter(tool => {
+      const matchesSearch = tool.name.toLowerCase().includes(query) ||
+                            tool.description.toLowerCase().includes(query) ||
+                            (tool.tags && tool.tags.some(t => t.toLowerCase().includes(query)));
+      const matchesUseCase = !useCase || (tool.useCases && tool.useCases.includes(useCase));
+      const matchesApi = !api || tool.hasApi;
+      return matchesSearch && matchesUseCase && matchesApi;
+    });
+
+    toolList.innerHTML = filtered.map(tool => `
+      <div class="tool-card">
+        <h3>
+          <a href="${tool.url}" target="_blank">${tool.name}</a>
+          ${tool.githubUrl ? `<a href="${tool.githubUrl}" class="github-link" target="_blank">⭐${tool.stars || '?'}</a>` : ''}
+        </h3>
+        <p>${tool.description}</p>
+        <div class="tags">
+          ${tool.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  searchInput.addEventListener("input", renderTools);
+  useCaseFilter.addEventListener("change", renderTools);
+  apiOnly.addEventListener("change", renderTools);
+
+  renderTools();
 });
