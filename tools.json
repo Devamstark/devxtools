@@ -4,10 +4,19 @@
     "url": "https://www.langchain.com",
     "githubUrl": "https://github.com/langchain-ai/langchain",
     "description": "Build context-aware, reasoning applications with LLMs.",
-    "tags": ["LLM Apps", "API", "Python", "JavaScript", "Open Source"],
+    "tags": [
+      "LLM Apps",
+      "API",
+      "Python",
+      "JavaScript",
+      "Open Source"
+    ],
     "hasApi": true,
     "hasCli": false,
-    "useCases": ["LLM Apps", "SaaS"],
+    "useCases": [
+      "LLM Apps",
+      "SaaS"
+    ],
     "license": "MIT",
     "stars": 58000,
     "lastUpdated": "2025-04-04"
@@ -17,10 +26,20 @@
     "url": "https://huggingface.co",
     "githubUrl": "https://github.com/huggingface/transformers",
     "description": "Open platform for ML models, datasets, and demos.",
-    "tags": ["Open Source", "API", "Python", "NLP", "Transformers"],
+    "tags": [
+      "Open Source",
+      "API",
+      "Python",
+      "NLP",
+      "Transformers"
+    ],
     "hasApi": true,
     "hasCli": true,
-    "useCases": ["LLM Apps", "Research", "SaaS"],
+    "useCases": [
+      "LLM Apps",
+      "Research",
+      "SaaS"
+    ],
     "license": "MIT",
     "stars": 75000,
     "lastUpdated": "2025-04-04"
@@ -30,10 +49,17 @@
     "url": "https://zapier.com/ai",
     "githubUrl": "",
     "description": "No-code automation with AI-powered workflows.",
-    "tags": ["No-Code Automation", "API", "SaaS"],
+    "tags": [
+      "No-Code Automation",
+      "API",
+      "SaaS"
+    ],
     "hasApi": true,
     "hasCli": false,
-    "useCases": ["No-Code Automation", "SaaS"],
+    "useCases": [
+      "No-Code Automation",
+      "SaaS"
+    ],
     "license": "Proprietary",
     "stars": 0,
     "lastUpdated": "2025-04-04"
